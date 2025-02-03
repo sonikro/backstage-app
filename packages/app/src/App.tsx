@@ -36,6 +36,9 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { createApiFactory, githubAuthApiRef } from '@backstage/core-plugin-api';
+import { ScmAuth, scmAuthApiRef } from '@backstage/integration-react';
+import { HomePage } from './HomePage';
 
 const app = createApp({
   apis,
@@ -56,14 +59,32 @@ const app = createApp({
       catalogIndex: catalogPlugin.routes.catalogIndex,
     });
   },
+  defaultApis: [
+    createApiFactory({
+      api: scmAuthApiRef,
+      deps: {
+        githubAuthApi: githubAuthApiRef,
+      },
+      factory: ({ githubAuthApi }) => ScmAuth.forGithub(githubAuthApi),
+    })
+  ],
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    SignInPage: props => <SignInPage
+    {...props}
+    auto
+    provider={{
+      id: 'github-auth-provider',
+      title: 'GitHub',
+      message: 'Sign in using GitHub',
+      apiRef: githubAuthApiRef,
+    }}
+  />,
   },
 });
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<Navigate to="catalog" />} />
+    <Route path="/" element={<HomePage/>} />
     <Route path="/catalog" element={<CatalogIndexPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"

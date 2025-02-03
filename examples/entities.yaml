@@ -1,4 +1,24 @@
 ---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  namespace: default
+  annotations:
+    backstage.io/managed-by-location: url:https://github.com/your_user
+    backstage.io/managed-by-origin-location: url:https://github.com/your_user
+    backstage.io/view-url: https://github.com/your_user
+    backstage.io/edit-url: https://github.com/your_user
+    backstage.io/source-location: url:https://github.com/
+    github.com/user-login: your_user
+  name: your_user
+spec:
+  profile:
+    displayName: your_user
+    email: your_user@your_user.com
+    picture: https://avatars.githubusercontent.com/u/aaaaaa
+  memberOf:
+    - team
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
 apiVersion: backstage.io/v1alpha1
 kind: System
